@@ -51,7 +51,7 @@ RUN a2enconf serverName
 # Apache modules
 RUN a2enmod rewrite headers
 
-# Copy hello-cron file to the cron.d directory
+# Copy cron file to the cron.d directory
 COPY cron /etc/cron.d/cron
 # Give execution rights on the cron job
 RUN chmod 0644 /etc/cron.d/cron \
