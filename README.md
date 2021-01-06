@@ -26,6 +26,8 @@ Sendy is a self hosted email newsletter application that lets you send trackable
 - Housekeeping
 - Third party integrations & Zapier
 
+<a href="https://sendy.co/?ref=kJgvA" title=""><img src="https://sendy.co/images/banners/125x125_var2.jpg" alt="Check out Sendy, a self hosted newsletter app that lets you send emails 100x cheaper via Amazon SES." width="125" height="125"/></a>
+
 # Usage
 
 ## Docker
