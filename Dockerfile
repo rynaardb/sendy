@@ -1,15 +1,3 @@
-#
-# Docker with Sendy Email Campaign Marketing
-#
-# Build:
-# $ docker build -t sendy:latest --target sendy -f ./Dockerfile .
-#
-# Build w/ XDEBUG installed
-# $ docker build -t sendy:debug-latest --target debug -f ./Dockerfile .
-#
-# Run:
-# $ docker run --rm -d --env-file sendy.env sendy:latest
-
 FROM php:7.4.8-apache as sendy
 
 ARG SENDY_VER=5.1.1
@@ -17,11 +5,9 @@ ARG ARTIFACT_DIR=5.1.1
 
 ENV SENDY_VERSION ${SENDY_VER}
 
+# Install tools and extensions
 RUN apt -qq update && apt -qq upgrade -y \
-  # Install unzip cron
   && apt -qq install -y unzip cron  \
-  # Install php extension gettext
-  # Install php extension mysqli
   && docker-php-ext-install gettext mysqli \
   # Remove unused packages
   && apt autoremove -y 
