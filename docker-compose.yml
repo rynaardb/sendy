@@ -1,62 +1,38 @@
-version: "3.7"
-
-# Volumes for persisted data.
-volumes: 
-  data_sendy:
-    labels: 
-      co.sendy.description: "Data volume for Sendy Database."
-
-# Secret files so they're not exposed via 'docker inspect'
-secrets:
-  db_password:
-    file: secrets/db_password.txt
-  db_root_password:
-    file: secrets/db_root_password.txt      
+version: '3.7'
 
 services:
-  # Database: MySQL
+  # Sendy MySQL database
   db_sendy:
-    hostname: db_sendy
+    hostname: sendy_db
     container_name: db_sendy
     image: mysql:5.6
-    env_file: 
-      - sendy.env
+    restart: always
     environment:
-      MYSQL_ROOT_PASSWORD_FILE: /run/secrets/db_root_password
-    secrets:
-      - db_root_password
-      - db_password      
-    volumes: 
-      - data_sendy:/var/lib/mysql
+      - SENDY_FQDN=sendy.example.com
+      - MYSQL_HOST=sendy_db
+      - MYSQL_DATABASE=sendy
+      - MYSQL_USER=sendy
+      - MYSQL_PASSWORD=superstrongpassword
+      - MYSQL_ROOT_PASSWORD=superstrongpassword
+    volumes:
+      - ./sendy_db:/var/lib/mysql
 
-  # WebApp: Apache2+PHP+Sendy
+  # Sendy app (Sendy, PHP, Apache2)
   sendy:
-    hostname: sendy
-    container_name: sendy
-    depends_on: 
-      - db_sendy
-    image: sendy:latest
-    build: 
-      context: .
-      # Uncomment to enabled XDEBUG build
-      # target: debug
-    env_file: 
-      - sendy.env
-    secrets:
-      - db_password 
-    ports:
-      - 8080:80
-
-  # Load Balancer: HAProxy
-  load-balancer:
-    hostname: lb_sendy
-    container_name: lb_sendy
-    image: lb_sendy
-    build:
-      context: .
-      dockerfile: haproxy/Dockerfile   
-    env_file: 
-      - sendy.env      
+    hostname: sendy_app
+    container_name: sendy_app
+    image: rynaardburger/sendy:latest
+    restart: always
     ports:
       - 80:80
-      - 443:443
+    environment:
+      - SENDY_FQDN=sendy.example.com
+      - MYSQL_HOST=sendy_db
+      - MYSQL_DATABASE=sendy
+      - MYSQL_USER=sendy
+      - MYSQL_PASSWORD=superstrongpassword
+    depends_on:
+      - db_sendy
+
+volumes:
+  sendy_data:

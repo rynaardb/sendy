@@ -43,6 +43,8 @@ docker run -d --name sendy -e SENDY_FQDN=sendy.example.com -e MYSQL_HOST=sendy_d
 Using docker-compose:
 
 ```yml
+version: '3.7'
+
 services:
   # Sendy MySQL database
   db_sendy:
